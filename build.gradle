@@ -1,0 +1,17 @@
+apply plugin: 'groovy'
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.8'
+  distributionUrl = 'http://services.gradle.org/distributions/gradle-1.8-all.zip'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://maven.jenkins-ci.org:8081/content/repositories/releases"
+    }
+}
+
+dependencies {
+    compile group: 'org.jenkins-ci.main', name: 'jenkins-core', version: '1.549'
+}
