@@ -1,9 +1,5 @@
+apply plugin: 'java'
 apply plugin: 'groovy'
-
-task wrapper(type: Wrapper) {
-  gradleVersion = '1.8'
-  distributionUrl = 'http://services.gradle.org/distributions/gradle-1.8-all.zip'
-}
 
 repositories {
     mavenCentral()
@@ -12,6 +8,20 @@ repositories {
     }
 }
 
+// Putting plugins here allows auto-fetching them from the web, but they're packaged for Jenkins not IntelliJ
+// That means the files have an unexpected extension, the classes are in an unexpected location, etc - can fix manually, but ...
 dependencies {
+    // Main "engine" repo for Jenkins
     compile group: 'org.jenkins-ci.main', name: 'jenkins-core', version: '1.549'
+
+    // Sample from old plugin package - the plus will grab the latest version found
+    compile group: 'org.jvnet.hudson.plugins', name: 'chucknorris', version: '+'
+
+    // Sample from new plugin package
+    compile group: 'org.jenkins-ci.plugins', name: 'ant', version: '1.2'
+    compile group: 'org.jenkins-ci.plugins', name: 'nested-view', version: '+'
+
+    // With this one grabbed and the sources jar manually added to IntelliJ's config AuthorizationMatrixProperty *partially* resolves ...
+    // However, in some places it remains unrecognized and to make things worse IntelliJ offers to import it, but fails since it already is, then offers again ..
+    //compile group: 'org.jenkins-ci.plugins', name: 'matrix-auth', version: '+'
 }
