@@ -40,7 +40,7 @@ println "Found $pendingModules module(s) and $pendingEngines engine(s) in queue 
 
 // SCENARIO: There is stuff in the queue. Do math to see if we have enough capacity
 // TODO: Briefly allowing the normal master to run 1 engine build while it is still over-sized
-if (pendingEngines > (engineQuotaPerDroplet * builderDroplets) + 1
+if (pendingEngines > (engineQuotaPerDroplet * builderDroplets)
         || pendingModules > moduleQuotaPerDroplet * (builderDroplets + 1)) {
     println "Need a build node! Spinning one up. No point checking for retirement"
     def job = Hudson.instance.getJob('ProvisionBuilder')
