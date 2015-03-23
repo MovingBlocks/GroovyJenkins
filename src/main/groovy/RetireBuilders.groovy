@@ -1,3 +1,5 @@
+// This script is triggered if the queue watcher has spotted a lack of activity
+// It re-checks the numbers to make sure nothing wasn't in the brief quiet period
 
 import hudson.model.*
 import jenkins.model.Jenkins
@@ -29,14 +31,21 @@ if (pendingModules + pendingEngines > 0) {
 def checkExecutors = false
 String nameToRetire
 String idToRetire
+String moduleNameToRetire
+String moduleIdToRetire
 Jenkins.instance.nodes.each { node ->
     println "Found a node: $node"
     String nodeName = node.name
-    if (nodeName.startsWith("builder")) {
+    if (nodeName.contains("builder")) {
         println "That node was a builder, so we might have something to retire"
         checkExecutors = true;
         nameToRetire = node.getNodeName()
         idToRetire = node.nodeDescription
+        if (nameToRetire.contains("module")) {
+            println "Furthermore that builder did modules, so we'll favor retiring it over engine builders"
+            moduleNameToRetire = node.getNodeName()
+            moduleIdToRetire = node.nodeDescription
+        }
     }
 }
 
@@ -47,7 +56,7 @@ if (checkExecutors) {
     // Computers, unlike nodes, link directly to executors
     Jenkins.instance.computers.each { computer ->
         println "Computer: " + computer.name
-        if (computer.name.startsWith("builder")) {
+        if (computer.name.contains("builder")) {
             // So we can check those here
             computer.executors.each { executor ->
                 println "Executor: " + executor + ", is it busy? " + executor.busy
@@ -69,6 +78,13 @@ if (retirementNeeded) {
         println "Huh, we didn't get a valid name + id combo to retire after all. Bug!"
         return
     }
+
+    // This little goofy hack lets us favor retiring module builders over engine builders (less useful)
+    if (moduleNameToRetire != null && moduleIdToRetire != null) {
+        nameToRetire = moduleNameToRetire
+        idToRetire = moduleIdToRetire
+    }
+
     println "Going to retire $nameToRetire with id $idToRetire"
 
     StringParameterValue urlParam = new StringParameterValue("dropletURL", nameToRetire, "URL of the droplet")

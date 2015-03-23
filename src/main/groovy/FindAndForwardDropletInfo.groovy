@@ -44,7 +44,7 @@ manager.listener.logger.println("Expected URL: " + expectedURL)
 for (int i = 0; i < tokens.length / 10; i++) {
     manager.listener.logger.println "Checking for index " + i
     manager.listener.logger.println "URL token is " + tokens[(i * 10 + 1)]
-    if (tokens[(i * 10 + 1)].equals(expectedURL)) {
+    if (tokens[(i * 10 + 1)].contains(expectedURL)) {
         manager.listener.logger.println "Found the new droplet in row " + (i + 1)
         newDroplet = i
     }

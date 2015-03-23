@@ -39,8 +39,12 @@ String agentIP = build.buildVariableResolver.resolve('dropletIP')
 
 // Other parameters are just hard coded for now, adjust as needed
 String agentHome = "/opt/jenkinsAgent"
-String agentExecutors = 3
-String agentLabels = "module engine"
+String agentExecutors = 1
+String agentLabels = "module"
+if (agentName.contains("engine")) {
+    agentLabels += " engine"
+    println "That agent was for an engine builder, so updated label: $agentLabels"
+}
 
 // There is a constructor that also takes a list of properties (env vars) at the end, but haven't needed that yet
 DumbSlave dumb = new DumbSlave(agentName, // Agent name, usually matches the host computer's machine name
