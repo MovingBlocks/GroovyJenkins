@@ -28,6 +28,7 @@ int engineDroplets = 0
 int moduleDroplets = 0
 Jenkins.instance.nodes.each { node ->
     println "Found a node: $node"
+    // TODO: Use the engine/module labels to determine capacity rather than node names
     String nodeName = node.name
     if (nodeName.startsWith("enginebuilder")) {
         println "That node was an engine builder, so incrementing the counter"
@@ -35,10 +36,13 @@ Jenkins.instance.nodes.each { node ->
     } else if (nodeName.startsWith("modulebuilder")) {
         println "That node was a module builder, so incrementing the counter"
         moduleDroplets++
+    } else if (nodeName.equals("martin-steiger.de")) {
+        println "msteiger's builder is online, so incrementing the engine counter"
+        engineDroplets++
     }
 }
 
-// Quotas per builder. Note in the if below we consider the Jenkins master to count as half a module builder
+// Quotas per builder. Note in the if below we consider the Jenkins master to count as half a module builder (the + 0.5)
 int engineQuotaPerDroplet = 2
 int moduleQuotaPerDroplet = 20
 int engineCapacity = engineQuotaPerDroplet * engineDroplets
