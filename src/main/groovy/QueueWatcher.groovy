@@ -23,6 +23,8 @@ queue.items.each {
     }
 }
 
+boolean msteigerAgentOnline = false;
+
 // See how many droplets we have active
 int engineDroplets = 0
 int moduleDroplets = 0
@@ -39,6 +41,7 @@ Jenkins.instance.nodes.each { node ->
     } else if (nodeName.equals("martin-steiger.de")) {
         println "msteiger's builder is online, so incrementing the engine counter"
         engineDroplets++
+        msteigerAgentOnline = true
     }
 }
 
@@ -70,6 +73,10 @@ if (pendingEngines > engineCapacity) {
 // Unless of course we have no builder droplets in the first place, in which case we don't care.
 } else if (engineDroplets + moduleDroplets > 0 && pendingEngines + pendingModules == 0) {
     println "Nothing relevant in queue - checking for builder nodes that may need retirement"
+
+    if (msteigerAgentOnline) {
+        engineDroplets--
+    }
 
     // Secondly if we had builder nodes check their executors - if any are busy we're not done
     def retirementNeeded = true
