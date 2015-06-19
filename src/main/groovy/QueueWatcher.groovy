@@ -96,7 +96,7 @@ if (pendingEngines > engineCapacity) {
             }
         }
     } else {
-        println "No busy builders, so nothing to retire"
+        println "No idle builders, so nothing to retire"
         return
     }
 
